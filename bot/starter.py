@@ -4,7 +4,7 @@ from game.match import Match, Status
 from discord.ext import commands
 
 # This class store the matches for each server
-class GameHelper:
+class StarterHelper:
 
     def __init__(self):
         self.matches = dict()
@@ -127,3 +127,4 @@ class Starter(commands.Cog):
         """Says hello"""
         print(ctx.message)
         await ctx.send(self.gameHelper.print_status())
+
