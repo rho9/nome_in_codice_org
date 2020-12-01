@@ -6,7 +6,11 @@ from discord.ext import commands
 
 
 class Game(commands.Cog):
+    """The commands for handle the game
 
+            !captain - Set the user as captain of a team
+
+       """
     def __init__(self, bot, starterHelper):
         self.bot = bot
         self.starterHelper = starterHelper
@@ -19,7 +23,7 @@ class Game(commands.Cog):
 
     @commands.command()
     async def captain(self, ctx, *, member: discord.Member = None):
-        """Says hello"""
+        """Set the user as captain of a team"""
         try:
             member = member or ctx.author
             res = self.join_as_captain(ctx.message.author.guild, ctx.message.channel, member)

@@ -5,12 +5,19 @@ from game.team import Team
 from util.exception import NotAllowedCommand
 
 class Status(Enum):
-    NOT_STARTED = 1
-    JOINABLE = 2
-    PLAY = 3
-    STOPPED = 4
+    """A class to represent the possible status for a match
+
+       """
+    NOT_STARTED = 1 #: it is a not joinable match just instantiated
+    JOINABLE = 2 #: it is a match in which players can join in.
+    PLAY = 3 #: it is a match started and players can't join in
+    STOPPED = 4 #: it is a match stopped
 
 class Match():
+    """A class to represent the match. It stores the guild, the channel, the list of members, the status and if the status of
+    the match is Status.PLAY also the StartedMatch object.
+
+       """
     def __init__(self, guild, channel):
         self.guild = guild
         self.channel = channel
@@ -83,20 +90,41 @@ class Match():
 
 
 class StartedMatch():
+    """A class to represent the started match. It stores the two team (red and blue).
+
+           """
     def __init__(self, match):
         self.match = match
         self.team_red = Team(ColorGame.RED, 'Red')
         self.team_blue = Team(ColorGame.BLUE, 'Blue')
 
     def join_as_captain(self, member):
+        """Joins the member to one team if available
+
+            Args:
+                member: A member instance
+
+            Returns:
+                A string with the name of the team
+
+            Raises:
+                NotAllowedCommand: An error occured when there are not spaces to be master available
+            """
+
         if self.team_red.master == None:
             self.team_red.set_master(member)
-            return 'red'
+            return self.team_red.name
         elif self.team_blue.master == None:
             self.team_blue.set_master(member)
-            return 'blue'
+            return self.team_blue.name
         else:
             raise NotAllowedCommand('Master is already set')
 
     def print_status(self):
+        """Prints the status of the match
+
+            Returns:
+                A string with a readable status
+
+            """
         return self.team_red.print_status() + '\n' + self.team_blue.print_status()
