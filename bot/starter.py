@@ -29,9 +29,9 @@ class StarterHelper:
         else:
             raise NotAllowedCommand('The match is not started')
 
-    def play(self, guild_id, channel_id):
+    def play(self, guild_id, channel_id, tag):
         if (guild_id,channel_id) in self.matches.keys():
-            self.matches[(guild_id, channel_id)].play()
+            self.matches[(guild_id, channel_id)].play(tag)
         else:
             raise NotAllowedCommand('The match is not started')
 
@@ -46,7 +46,7 @@ class StarterHelper:
         """print the status
 
             """
-        s = ''
+        s = 'Match'
         for m in self.matches.keys():
             s += self.matches[m].print_status()
         return s
@@ -126,15 +126,15 @@ class Starter(commands.Cog):
 
 
     @commands.command()
-    async def play(self, ctx, *, member: discord.Member = None):
+    async def play(self, ctx, tag, *, member: discord.Member = None):
         """ The game start and is not joinable anymore
 
         """
         print(ctx.message)
         try:
-            self.gameHelper.play(ctx.message.guild.id, ctx.message.channel.id)
+            self.gameHelper.play(ctx.message.guild.id, ctx.message.channel.id, tag)
             member = member or ctx.author
-            await ctx.send('play {0.name}~'.format(member))
+            await ctx.send('play {0.name} tag {1}~'.format(member, tag))
             await ctx.send(self.gameHelper.print_status())
         except NotAllowedCommand as err:
             await ctx.send(err.message)
