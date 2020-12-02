@@ -7,3 +7,6 @@
 - Cercare bot simili
 - Bot easy per pasticciare
 - Fare diagramma delle classi e assegnare il lavoro
+
+## Doc
+Per stampare la documentazione andare nella cartella `docs` e dare il comando `make html`

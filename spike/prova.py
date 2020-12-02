@@ -1,4 +1,4 @@
-# bot.py
+# starter.py
 import os
 import random
 import discord
