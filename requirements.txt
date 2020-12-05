@@ -10,11 +10,15 @@ commonmark==0.9.1
 discord.py==1.5.1
 docutils==0.16
 idna==2.10
+idna-ssl==1.1.0
 imagesize==1.2.0
 Jinja2==2.11.2
 MarkupSafe==1.1.1
 multidict==4.7.6
+mysql-connector-python==8.0.22
 packaging==20.7
+pkg-resources==0.0.0
+protobuf==3.14.0
 Pygments==2.7.2
 pyparsing==2.4.7
 python-dotenv==0.15.0
@@ -23,6 +27,7 @@ pytz==2020.4
 PyYAML==5.3.1
 recommonmark==0.6.0
 requests==2.25.0
+six==1.15.0
 snowballstemmer==2.0.0
 Sphinx==3.3.1
 sphinxcontrib-applehelp==1.0.2
@@ -31,5 +36,6 @@ sphinxcontrib-htmlhelp==1.0.3
 sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==1.0.3
 sphinxcontrib-serializinghtml==1.1.4
+typing-extensions==3.7.4.3
 urllib3==1.26.2
 yarl==1.5.1
