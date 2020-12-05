@@ -19,7 +19,6 @@ MarkupSafe==1.1.1
 multidict==4.7.6
 mysql-connector-python==8.0.22
 packaging==20.7
-pkg-resources==0.0.0
 protobuf==3.14.0
 Pygments==2.7.2
 pyparsing==2.4.7
