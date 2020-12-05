@@ -3,7 +3,7 @@ from PIL import ImageFont
 from PIL import ImageDraw
 
 # remember to use 'with Image.open('test.jpg') as img:' to avoid memory disaster
-img = Image.open('images/white_card.png', 'r')
+img = Image.open('../../images/white_card.png', 'r')
 draw = ImageDraw.Draw(img)
 img_w, img_h = img.size
 
@@ -19,7 +19,7 @@ word_list = ["carta1", "carta22222", "carta33", "carta4", "carta5"]
 
 # row
 for word in word_list:
-    img = Image.open('images/white_card.png', 'r')
+    img = Image.open('../../images/white_card.png', 'r')
     draw = ImageDraw.Draw(img)
 
     # calculate where to place the word inside the white space of the card
@@ -45,7 +45,7 @@ word_list = ["carta6", "carta7", "carta8", "carta9", "carta10"]
 
 # second column
 for word in word_list:
-    img = Image.open('images/white_card.png', 'r')
+    img = Image.open('../../images/white_card.png', 'r')
     draw = ImageDraw.Draw(img)
     draw.text((W, H), word, fill="black", font=font)
     pos = word_list.index(word)

@@ -9,7 +9,7 @@ from PIL import ImageDraw
 # - you have to re center the text according to its length
 # - you can't change the colour of the cards
 
-img = Image.open('images/white_cards.png')
+img = Image.open('../../images/white_cards.png')
 draw = ImageDraw.Draw(img)
 
 font = ImageFont.truetype("arial.ttf", 60)
