@@ -15,7 +15,7 @@ class Word():
     """private method to reveal the word
 
     """
-    def reveal(self):
+    def show(self):
         self.revealed = True
 
     def print_status(self):
@@ -85,14 +85,15 @@ class WordTable():
             else:
                 self.words.append(Word(w,ColorGame.ASSASSIN))
 
-    def reveal(self, string):
+    def show(self, string):
         """Reveal the word
 
             """
         for w in self.words:
-            if w.name == string:
-                w.reveal()
-                break
+            if w.name.lower() == string.lower():
+                w.show()
+                return True, w.color
+        return False, None
 
     def get_red_point(self):
         """Count the red card revealed
@@ -115,4 +116,5 @@ class WordTable():
             if num == 0:
                 s += '\n'
                 num = 5
+        s+= 'Word guessed\nRed team: {}\nBlue team:{}\n'.format(self.get_red_point(),self.get_blue_point())
         return s

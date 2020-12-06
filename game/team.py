@@ -6,7 +6,6 @@ class Team():
         self.color = color
         self.name = name
         self.master = None
-        self.current_turn = False
         self.members = dict()
 
     def set_master(self, member):
