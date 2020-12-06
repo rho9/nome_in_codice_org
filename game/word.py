@@ -1,5 +1,5 @@
 from game.colorgame import ColorGame
-from game.stub import Database
+from game.database import Database
 import random
 
 class Word():
