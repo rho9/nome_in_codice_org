@@ -63,7 +63,8 @@ class WordTable():
             """
         db = Database()
         listOfWord = db.get_words_by_tag(tag)
-
+        if len(listOfWord) < self.size:
+            raise NotAllowedCommand(_('error_missing_words', tag = tag))
         self.words_str = random.sample(listOfWord, self.size)
         self.red_words = random.sample(self.words_str, self.number_red)
 
