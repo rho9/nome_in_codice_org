@@ -1,6 +1,8 @@
 from game.colorgame import ColorGame
 from game.database import Database
 import random
+from util.exception import NotAllowedCommand
+from util.strings import get_string_bot as _
 
 class Word():
     """A class to represent a word in the game
@@ -16,7 +18,10 @@ class Word():
 
     """
     def show(self):
-        self.revealed = True
+        if self.revealed:
+            raise NotAllowedCommand(_('error_word_show'))
+        else:
+            self.revealed = True
 
     def print_status(self):
         color = ''

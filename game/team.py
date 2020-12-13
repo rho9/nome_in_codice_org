@@ -42,5 +42,5 @@ class Team:
 
     def leave(self, member):
         self.members.pop(member.id, None)
-        if self.master.id == member.id:
+        if self.master is not None and self.master.id == member.id:
             self.master = None

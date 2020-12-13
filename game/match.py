@@ -36,7 +36,6 @@ class Match:
     def __init__(self, guild, channel):
         self.guild = guild
         self.channel = channel
-        self.members = dict()
         self.status = Status.NOT_STARTED
         self.team_red = None
         self.team_blue = None
@@ -53,18 +52,27 @@ class Match:
         else:
             return None
 
+    def get_team_member(self, member):
+        if member.id in self.team_red.members.keys():
+            return self.team_red
+        if member.id in self.team_blue.members.keys():
+            return self.team_blue
+        return None
+
     def join(self, member):
         if self.status != Status.JOINABLE:
             raise NotAllowedCommand(_('error_joinable'))
-        self.members[member.id] = member
-        self.auto_join(member)
+        if self.get_team_member(member) is None:
+            self.auto_join(member)
+        else:
+            raise NotAllowedCommand(_('error_already_joined', team=self.get_team_member(member).name))
 
     def leave(self, member):
         if self.status != Status.JOINABLE:
             raise NotAllowedCommand(_('error_joinable'))
-        if member.id in self.members.keys():
-            self.members.pop(member.id)
-            self.leave_master(member)
+        team = self.get_team_member(member)
+        if team is not None:
+            team.leave(member)
         else:
             raise NotAllowedCommand(_('error_not_join'))
 
@@ -72,7 +80,6 @@ class Match:
         if self.status == Status.JOINABLE:
             raise NotAllowedCommand(_('error_started'))
         else:
-            self.members = dict()
             self.status = Status.JOINABLE
             self.team_red = Team(ColorGame.RED, 'Red')
             self.team_blue = Team(ColorGame.BLUE, 'Blue')
@@ -102,10 +109,8 @@ class Match:
         return s
 
     def print_status(self):
-        s = "Guild id: {}, channel id: {}, status: {} \nMembers:\n".format(self.guild.name,
-                                                                           self.channel.name, self.status)
-        for m in self.members.keys():
-            s += self.members[m].name + '\n'
+        s = "Guild id: {}, channel id: {}, status: {} \n".format(self.guild.name, self.channel.name, self.status)
+
         s += self.team_red.print_status() + '\n' + self.team_blue.print_status() + '\n'
         if self.status == Status.PLAY:
             s += 'current turn: {} team\n'.format(self.current_turn.name)
@@ -129,28 +134,22 @@ class Match:
         if self.status != Status.JOINABLE:
             raise NotAllowedCommand(_('error_joinable'))
         else:
-            if member.id not in self.members.keys():
-                self.join(member)
-            return self.join_team(member)
+            return self.join_team_as_master(member)
 
     def has_masters(self):
         return self.team_red.master is not None and self.team_blue.master is not None
 
-    def leave_master(self, member):
-        if self.team_red.master == member:
-            self.team_red.master = None
-        if self.team_blue.master == member:
-            self.team_blue.master = None
-
-    def join_team(self, member):
-        if self.team_red.master is None:
+    def join_team_as_master(self, member):
+        if self.team_red.master is not None and self.team_blue.master is not None:
+            raise NotAllowedCommand(_('error_master_already_set'))
+        if self.team_red.master is None and member.id not in self.team_blue.members.keys():
             self.team_red.set_master(member)
             return self.team_red.name
-        elif self.team_blue.master is None:
+        elif self.team_blue.master is None and member.id not in self.team_red.members.keys():
             self.team_blue.set_master(member)
             return self.team_blue.name
         else:
-            raise NotAllowedCommand(_('error_master_already_set'))
+            raise NotAllowedCommand(_('error_master_other_team'))
 
     def show(self, member, word):
         if self.status == Status.PLAY:

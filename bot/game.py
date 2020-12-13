@@ -49,7 +49,7 @@ class Game(commands.Cog):
         try:
             member = member or ctx.author
             self.join_as_master(ctx.message.author.guild, ctx.message.channel, member)
-            await ctx.send(_('user_joined', user=member.name))
+            await ctx.send(_('join_game_as_master', user=member.name))
             await ctx.send(self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].print_members())
         except NotAllowedCommand as err:
             await ctx.send(err.message)
@@ -64,9 +64,9 @@ class Game(commands.Cog):
                 name = self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].winner.name
                 await ctx.send(_('end_game', team=name))
             elif res == ActionResult.GUESS:
-                await ctx.send(_('word_guessed'), word=word)
+                await ctx.send(_('word_guessed', word=word))
             else:
-                await ctx.send(_('word_not_guessed'), word=word)
+                await ctx.send(_('word_not_guessed', word=word))
             await self.send_images(ctx)
         except NotAllowedCommand as err:
             await ctx.send(err.message)
@@ -78,3 +78,111 @@ class Game(commands.Cog):
             self.pass_turn(ctx.message.author.guild, ctx.message.channel, member)
         except NotAllowedCommand as err:
             await ctx.send(err.message)
+
+    @commands.command()
+    async def changeteam(self, ctx, *, member: discord.Member = None):
+        try:
+            member = member or ctx.author
+            self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].change_team(member)
+            await ctx.send(self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].print_members())
+        except NotAllowedCommand as err:
+            await ctx.send(err.message)
+
+    """The commands for handle the start, join and stop of a game
+
+        !start - start a game in which player can join with join command.
+
+        !join - Join in the game. Allowed only if the game is JOINABLE
+
+        !leave - leave the game. Allowed only if the game is JOINABLE
+
+        !play - The game start and is not joinable anymore
+
+        !stop - Stop the game
+
+        !status - Send the status
+       """
+
+    @commands.command()
+    async def hello(self, ctx, *, member: discord.Member = None):
+        """ Says hello
+
+            """
+        member = member or ctx.author
+        await ctx.send('Hello {0.name}~'.format(member))
+
+    @commands.command()
+    async def start(self, ctx, *, member: discord.Member = None):
+        """ start a game in which player can join with join command.
+
+        """
+        print(ctx.message)
+        try:
+            self.game_helper.start(ctx.message.author.guild, ctx.message.channel)
+            member = member or ctx.author
+            await ctx.send(_('start_game', user=member.name))
+        except NotAllowedCommand as err:
+            await ctx.send(err.message)
+
+    @commands.command()
+    async def join(self, ctx, *, member: discord.Member = None):
+        """ Join in the game. Allowed only if the game is JOINABLE
+
+        """
+        print(ctx.message)
+        try:
+            self.game_helper.join(ctx.message.guild.id, ctx.message.channel.id, ctx.author)
+            member = member or ctx.author
+            await ctx.send(_('join_game', user=member.name))
+            await ctx.send(self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].print_members())
+        except NotAllowedCommand as err:
+            await ctx.send(err.message)
+
+    @commands.command()
+    async def leave(self, ctx, *, member: discord.Member = None):
+        """leave the game. Allowed only if the game is JOINABLE
+
+        """
+        print(ctx.message)
+        try:
+            self.game_helper.leave(ctx.message.guild.id, ctx.message.channel.id, ctx.author)
+            member = member or ctx.author
+            await ctx.send(_('leave_game', user=member.name))
+            await ctx.send(self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].print_members())
+        except NotAllowedCommand as err:
+            await ctx.send(err.message)
+
+    @commands.command()
+    async def play(self, ctx, tag, *, member: discord.Member = None):
+        """ The game start and is not joinable anymore
+
+        """
+        print(ctx.message)
+        try:
+            self.game_helper.play(ctx.message.guild.id, ctx.message.channel.id, tag)
+            member = member or ctx.author
+            await ctx.send(_('play_game', user=member.name, tag=tag))
+            await self.send_images(ctx)
+        except NotAllowedCommand as err:
+            await ctx.send(err.message)
+
+    @commands.command()
+    async def stop(self, ctx, *, member: discord.Member = None):
+        """ Stop the game
+
+            """
+        print(ctx.message)
+        try:
+            self.game_helper.stop(ctx.message.guild.id, ctx.message.channel.id)
+            member = member or ctx.author
+            await ctx.send(_('stop_game', user=member.name))
+        except NotAllowedCommand as err:
+            await ctx.send(err.message)
+
+    @commands.command()
+    async def status(self, ctx):
+        """ send the status
+
+        """
+        print(ctx.message)
+        await ctx.send(self.game_helper.print_status())
