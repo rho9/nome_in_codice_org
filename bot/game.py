@@ -2,6 +2,7 @@ import discord
 from util.exception import NotAllowedCommand
 from game.match import ActionResult
 from discord.ext import commands
+from game.image_generator import ImageGenerator
 from util.strings import get_string_bot as _
 
 
@@ -15,6 +16,7 @@ class Game(commands.Cog):
     def __init__(self, bot, game_helper):
         self.bot = bot
         self.game_helper = game_helper
+        self.image_generator = ImageGenerator()
 
     def join_as_master(self, guild, channel, member):
         if (guild.id, channel.id) in self.game_helper.matches.keys():
@@ -35,13 +37,18 @@ class Game(commands.Cog):
             raise NotAllowedCommand(_('error_not_started'))
 
     async def send_images(self, ctx):
-        await ctx.send('IMMAGINE')
+        words = self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].grid_table.words
+        next_team = self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].current_turn.name
+        spies_image = [discord.File(ImageGenerator().generate(words, False))]
+        await ctx.send(_('turn', team=next_team),files=spies_image)
         master_red = self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].team_red.master
         master_blue = self.game_helper.matches[(ctx.message.author.guild.id, ctx.message.channel.id)].team_blue.master
         if master_red is not None:
-            await master_red.send('IMMAGINE_PER_MASTER')
+            masters_image = [discord.File(ImageGenerator().generate(words, True))]
+            await master_red.send(files=masters_image)
         if master_blue is not None:
-            await master_blue.send('IMMAGINE_PER_MASTER')
+            masters_image = [discord.File(ImageGenerator().generate(words, True))]
+            await master_blue.send(files=masters_image)
 
     @commands.command()
     async def master(self, ctx, *, member: discord.Member = None):

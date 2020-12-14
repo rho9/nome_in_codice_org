@@ -34,3 +34,4 @@ en:
   tag_adding: 'You are adding words for the tag %{tag}. Write the words in the following way: one word/term in each line'
   words_added: 'Words added'
   stop_word: 'Stop insering words'
+  turn: 'It is the turn of the %{team} team'
